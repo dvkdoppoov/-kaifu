@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="kz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>по kaifu — Барбершоп</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1B1815;
+    --bg-panel: #241F19;
+    --bg-panel-raised: #2C2620;
+    --paper: #EFE7D8;
+    --paper-dim: #B4AA96;
+    --brass: #C29A53;
+    --brass-bright: #E0BC7C;
+    --oxblood: #7C2F2C;
+    --oxblood-bright: #9C3C36;
+    --line: rgba(194,154,83,.28);
+    --font-display: 'Rye', serif;
+    --font-body: 'Work Sans', sans-serif;
+    --radius: 3px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--paper);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{ margin:0; }
+  p{ margin:0; }
+  ul{ margin:0; padding:0; list-style:none; }
+  a{ color:inherit; text-decoration:none; }
+  button{ font-family:inherit; cursor:pointer; }
+  input,select{ font-family:inherit; }
+
+  img,svg{ display:block; max-width:100%; }
+
+  :focus-visible{
+    outline:2px solid var(--brass-bright);
+    outline-offset:3px;
+  }
+
+  .wrap{
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(27,24,21,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px;
+    max-width:1120px; margin:0 auto;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--font-display);
+    font-size:1.35rem;
+    letter-spacing:.02em;
+    color:var(--paper);
+  }
+  .brand svg{ width:26px; height:26px; flex:none; }
+  nav.links{ display:flex; gap:32px; }
+  nav.links a{
+    font-size:.95rem; color:var(--paper-dim);
+    padding:6px 0; border-bottom:1px solid transparent;
+    transition:color .2s ease, border-color .2s ease;
+  }
+  nav.links a:hover{ color:var(--paper); border-color:var(--brass); }
+  .book-btn{
+    display:inline-block;
+    background:var(--brass);
+    color:#1B1815;
+    font-weight:600;
+    font-size:.9rem;
+    padding:10px 20px;
+    border-radius:var(--radius);
+    border:1px solid var(--brass);
+    transition:background .2s ease, transform .15s ease;
+  }
+  .book-btn:hover{ background:var(--brass-bright); }
+  .book-btn:active{ transform:translateY(1px); }
+  .burger{
+    display:none;
+    width:32px; height:32px;
+    border:none; background:none;
+    flex-direction:column; justify-content:center; gap:5px;
+  }
+  .burger span{
+    display:block; height:2px; width:100%;
+    background:var(--paper);
+  }
+  .mobile-links{
+    display:none;
+    flex-direction:column;
+    padding:0 24px 20px;
+    gap:14px;
+  }
+  .mobile-links a{ color:var(--paper-dim); font-size:1rem; }
+  .mobile-links.open{ display:flex; }
+
+  @media (max-width:820px){
+    nav.links{ display:none; }
+    .burger{ display:flex; }
+    header .book-btn.desktop-only{ display:none; }
+  }
+
+  /* ---------- tile strip (barbershop-floor motif) ---------- */
+  .tile-strip{
+    height:12px;
+    background-image:conic-gradient(var(--brass) 90deg, transparent 90deg 180deg, var(--brass) 180deg 270deg, transparent 270deg 360deg);
+    background-size:12px 12px;
+    opacity:.55;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:72px 0 56px;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.3fr .9fr;
+    gap:48px;
+    align-items:end;
+  }
+  .hero h1{
+    font-family:var(--font-display);
+    font-size:clamp(2.6rem, 5.6vw, 4.4rem);
+    line-height:1.05;
+    color:var(--paper);
+    max-width:11ch;
+  }
+  .hero .lede{
+    margin-top:22px;
+    max-width:46ch;
+    color:var(--paper-dim);
+    font-size:1.05rem;
+  }
+  .hero .cta-row{
+    margin-top:32px;
+    display:flex; gap:16px; flex-wrap:wrap;
+  }
+  .btn-primary{
+    background:var(--brass);
+    color:#1B1815;
+    font-weight:600;
+    padding:14px 26px;
+    border-radius:var(--radius);
+    border:1px solid var(--brass);
+    font-size:1rem;
+    transition:background .2s ease, transform .15s ease;
+  }
+  .btn-primary:hover{ background:var(--brass-bright); }
+  .btn-primary:active{ transform:translateY(1px); }
+  .btn-ghost{
+    padding:14px 22px;
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    color:var(--paper-dim);
+    font-size:1rem;
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .btn-ghost:hover{ border-color:var(--brass); color:var(--paper); }
+
+  .plaque{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-top:3px solid var(--brass);
+    padding:26px 26px 22px;
+  }
+  .plaque .plaque-label{
+    font-size:.8rem;
+    color:var(--brass-bright);
+    margin-bottom:14px;
+  }
+  .plaque dl{ display:grid; grid-template-columns:auto 1fr; gap:10px 16px; }
+  .plaque dt{ color:var(--paper-dim); font-size:.9rem; }
+  .plaque dd{ margin:0; font-size:.9rem; text-align:right; }
+  .plaque .status{
+    display:flex; align-items:center; gap:8px;
+    margin-top:18px; padding-top:16px;
+    border-top:1px solid var(--line);
+    font-size:.9rem; color:var(--paper-dim);
+  }
+  .status .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:#6E9C6A; flex:none;
+  }
+  .status .dot.closed{ background:var(--oxblood-bright); }
+
+  @media (max-width:820px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero{ padding:48px 0 40px; }
+  }
+
+  /* ---------- section shell ---------- */
+  .section{ padding:76px 0; }
+  .section-alt{ background:var(--bg-panel); }
+  .section-head{ max-width:56ch; margin-bottom:44px; }
+  .section-head h2{
+    font-family:var(--font-body);
+    font-weight:700;
+    font-size:clamp(1.8rem, 3vw, 2.4rem);
+    color:var(--paper);
+  }
+  .section-head p{
+    margin-top:12px;
+    color:var(--paper-dim);
+    font-size:1rem;
+    max-width:52ch;
+  }
+
+  /* ---------- services ---------- */
+  .service-list{ border-top:1px solid var(--line); }
+  .service-row{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    gap:20px;
+    align-items:baseline;
+    padding:20px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .service-row .name{ font-size:1.05rem; color:var(--paper); }
+  .service-row .duration{ color:var(--paper-dim); font-size:.9rem; white-space:nowrap; }
+  .service-row .price{
+    font-weight:600; color:var(--brass-bright);
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+  }
+  @media (max-width:560px){
+    .service-row{ grid-template-columns:1fr; gap:4px; }
+    .service-row .price{ order:2; }
+    .service-row .duration{ order:3; }
+  }
+
+  /* ---------- masters ---------- */
+  .master-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:20px;
+  }
+  .master-card{
+    background:var(--bg);
+    border:1px solid var(--line);
+    padding:22px 18px;
+  }
+  .master-badge{
+    width:52px; height:52px;
+    border:1px solid var(--brass);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display);
+    font-size:1.15rem;
+    color:var(--brass-bright);
+    margin-bottom:16px;
+  }
+  .master-card h3{ font-size:1.05rem; color:var(--paper); }
+  .master-card .spec{
+    margin-top:8px;
+    font-size:.88rem;
+    color:var(--paper-dim);
+    line-height:1.5;
+  }
+  @media (max-width:900px){ .master-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .master-grid{ grid-template-columns:1fr; } }
+
+  /* ---------- booking ---------- */
+  .booking-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    align-items:start;
+  }
+  .field{ margin-bottom:18px; }
+  .field label{
+    display:block;
+    font-size:.88rem;
+    color:var(--paper-dim);
+    margin-bottom:7px;
+  }
+  .field input,
+  .field select{
+    width:100%;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    color:var(--paper);
+    padding:12px 14px;
+    font-size:.98rem;
+  }
+  .field input::placeholder{ color:#77705F; }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+  .slot-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:8px;
+  }
+  .slot-btn{
+    background:var(--bg);
+    border:1px solid var(--line);
+    color:var(--paper-dim);
+    padding:10px 6px;
+    font-size:.88rem;
+    border-radius:var(--radius);
+    transition:border-color .15s ease, background .15s ease, color .15s ease;
+  }
+  .slot-btn:hover:not(:disabled){ border-color:var(--brass); color:var(--paper); }
+  .slot-btn.is-selected{
+    background:var(--brass);
+    border-color:var(--brass);
+    color:#1B1815;
+    font-weight:600;
+  }
+  .slot-btn:disabled{
+    opacity:.35;
+    text-decoration:line-through;
+    cursor:not-allowed;
+  }
+  .slot-hint{ font-size:.82rem; color:var(--paper-dim); margin-top:4px; }
+
+  .ledger{
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-left:3px solid var(--brass);
+    padding:20px;
+  }
+  .ledger h3{
+    font-size:.95rem; color:var(--paper);
+    margin-bottom:14px;
+  }
+  .ledger .row{
+    display:flex; justify-content:space-between; gap:10px;
+    padding:8px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:.9rem;
+  }
+  .ledger .row:last-child{ border-bottom:none; }
+  .ledger .row .k{ color:var(--paper-dim); }
+  .ledger .row .v{ color:var(--paper); text-align:right; }
+  .ledger .empty{ color:var(--paper-dim); font-size:.88rem; }
+
+  .submit-btn{
+    width:100%;
+    margin-top:8px;
+    background:var(--brass);
+    color:#1B1815;
+    font-weight:600;
+    padding:14px;
+    border:1px solid var(--brass);
+    border-radius:var(--radius);
+    font-size:1rem;
+    transition:background .2s ease;
+  }
+  .submit-btn:hover{ background:var(--brass-bright); }
+  .submit-btn:disabled{
+    background:var(--bg-panel-raised);
+    border-color:var(--line);
+    color:var(--paper-dim);
+    cursor:not-allowed;
+  }
+  .form-error{
+    color:var(--oxblood-bright);
+    font-size:.85rem;
+    margin-top:10px;
+    min-height:1em;
+  }
+
+  .confirm{
+    background:var(--bg);
+    border:1px solid var(--brass);
+    padding:26px;
+  }
+  .confirm .tag{
+    display:inline-block;
+    font-size:.78rem;
+    color:var(--brass-bright);
+    border:1px solid var(--brass);
+    padding:3px 9px;
+    border-radius:var(--radius);
+    margin-bottom:14px;
+  }
+  .confirm h3{ font-size:1.2rem; color:var(--paper); margin-bottom:4px; }
+  .confirm .sub{ color:var(--paper-dim); font-size:.9rem; margin-bottom:18px; }
+  .confirm .row{
+    display:flex; justify-content:space-between;
+    padding:9px 0; border-bottom:1px dashed var(--line);
+    font-size:.92rem;
+  }
+  .confirm .row:last-of-type{ border-bottom:none; }
+  .confirm .row .k{ color:var(--paper-dim); }
+  .confirm .note{
+    margin-top:18px; font-size:.85rem; color:var(--paper-dim);
+    line-height:1.5;
+  }
+  .confirm .again{ margin-top:20px; }
+
+  @media (max-width:820px){
+    .booking-grid{ grid-template-columns:1fr; }
+    .field-row{ grid-template-columns:1fr; }
+    .slot-grid{ grid-template-columns:repeat(3,1fr); }
+  }
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:48px 0 36px;
+  }
+  .foot-grid{
+    display:grid;
+    grid-template-columns:1.2fr 1fr 1fr;
+    gap:32px;
+  }
+  .foot-grid h4{
+    font-size:.85rem; color:var(--brass-bright);
+    margin-bottom:14px;
+  }
+  .foot-grid p, .foot-grid a{
+    display:block;
+    color:var(--paper-dim);
+    font-size:.92rem;
+    line-height:1.7;
+  }
+  .foot-grid a:hover{ color:var(--paper); }
+  .foot-bottom{
+    margin-top:36px; padding-top:20px;
+    border-top:1px solid var(--line);
+    color:#7A7364; font-size:.82rem;
+  }
+  @media (max-width:700px){
+    .foot-grid{ grid-template-columns:1fr; gap:26px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+
+  .fade-up{
+    animation:fadeUp .7s ease both;
+  }
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(14px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-row">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <circle cx="6" cy="6" r="2.4"></circle>
+        <circle cx="6" cy="18" r="2.4"></circle>
+        <path d="M8 7.5L19 17M8 16.5L19 7"></path>
+      </svg>
+      по kaifu
+    </a>
+    <nav class="links">
+      <a href="#services">Услуги</a>
+      <a href="#masters">Мастера</a>
+      <a href="#booking">Бронирование</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+    <a class="book-btn desktop-only" href="#booking">Записаться</a>
+    <button class="burger" id="burgerBtn" aria-label="Открыть меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav class="mobile-links" id="mobileLinks">
+    <a href="#services">Услуги</a>
+    <a href="#masters">Мастера</a>
+    <a href="#booking">Бронирование</a>
+    <a href="#contacts">Контакты</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="fade-up">
+        <h1>Точная стрижка.<br>Никакой суеты.</h1>
+        <p class="lede">по kaifu — барбершоп в центре города. Классические техники, острые лезвия и мастера, которые слушают, что вам нужно, а не что модно в этом сезоне.</p>
+        <div class="cta-row">
+          <a class="btn-primary" href="#booking">Записаться на стрижку</a>
+          <a class="btn-ghost" href="#services">Смотреть услуги</a>
+        </div>
+      </div>
+      <div class="plaque">
+        <div class="plaque-label">Сегодня</div>
+        <dl>
+          <dt>Часы работы</dt><dd>Пн–вс 10:00–20:00</dd>
+          <dt>Адрес</dt><dd>ул. Жаяу Муса, 141</dd>
+          <dt>Телефон</dt><dd>+7-707-632-92-25</dd>
+        </dl>
+        <div class="status">
+          <span class="dot" id="statusDot"></span>
+          <span id="statusText">Открыто сейчас</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="tile-strip"></div>
+
+  <section class="section" id="services">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Услуги</h2>
+        <p>Фиксированная цена и время на каждую позицию — без сюрпризов в конце визита.</p>
+      </div>
+      <ul class="service-list" id="serviceList"></ul>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="masters">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Мастера</h2>
+        <p>Четыре барбера, четыре почерка. При записи можно выбрать конкретного мастера или доверить нам подбор.</p>
+      </div>
+      <div class="master-grid" id="masterGrid"></div>
+    </div>
+  </section>
+
+  <section class="section" id="booking">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Бронирование</h2>
+        <p>Выберите услугу, мастера, дату и время. Мы позвоним вам по указанному номеру, чтобы подтвердить запись.</p>
+      </div>
+
+      <div class="booking-grid">
+        <form id="bookingForm" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label for="clientName">Имя</label>
+              <input type="text" id="clientName" name="clientName" placeholder="Как вас зовут">
+            </div>
+            <div class="field">
+              <label for="clientPhone">Телефон</label>
+              <input type="tel" id="clientPhone" name="clientPhone" placeholder="+7 900 000-00-00">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="clientEmail">Email (необязательно, для напоминания)</label>
+            <input type="email" id="clientEmail" name="clientEmail" placeholder="you@example.com">
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="serviceSelect">Услуга</label>
+              <select id="serviceSelect" name="serviceSelect"></select>
+            </div>
+            <div class="field">
+              <label for="masterSelect">Мастер</label>
+              <select id="masterSelect" name="masterSelect"></select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="dateInput">Дата</label>
+            <input type="date" id="dateInput" name="dateInput">
+          </div>
+
+          <div class="field">
+            <label>Время</label>
+            <div class="slot-grid" id="slotGrid"></div>
+            <p class="slot-hint" id="slotHint">Сначала выберите дату.</p>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn" disabled>Записаться</button>
+          <p class="form-error" id="formError"></p>
+        </form>
+
+        <div id="sideCol">
+          <div class="ledger" id="ledgerBox">
+            <h3>Ваша запись</h3>
+            <p class="empty" id="ledgerEmpty">Заполните форму слева — здесь появится сводка перед подтверждением.</p>
+            <div id="ledgerRows" style="display:none">
+              <div class="row"><span class="k">Услуга</span><span class="v" id="lgService">—</span></div>
+              <div class="row"><span class="k">Мастер</span><span class="v" id="lgMaster">—</span></div>
+              <div class="row"><span class="k">Дата</span><span class="v" id="lgDate">—</span></div>
+              <div class="row"><span class="k">Время</span><span class="v" id="lgTime">—</span></div>
+              <div class="row"><span class="k">Стоимость</span><span class="v" id="lgPrice">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="confirmBox" style="display:none; margin-top:32px;"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contacts">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h4>Пo kaifu</h4>
+        <p>ул. Жаяу Муса, 141<br>Пн–вс 10:00–20:00</p>
+      </div>
+      <div>
+        <h4>Связаться</h4>
+        <a href="tel:+7-707-632-92-25">+7-707-632-92-25</a>
+        <a href="#">WhatsApp</a>
+      </div>
+      <div>
+        <h4>Навигация</h4>
+        <a href="#services">Услуги</a>
+        <a href="#masters">Мастера</a>
+        <a href="#booking">Бронирование</a>
+      </div>
+    </div>
+    <div class="foot-bottom">© 2026 по kaifu. Демо-страница для примера.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+
+  var services = [
+    { id:'classic', name:'Классическая стрижка', price:1500, duration:40 },
+    { id:'combo',   name:'Стрижка + борода',      price:2200, duration:60 },
+    { id:'shave',   name:'Королевское бритьё',     price:1800, duration:30 },
+    { id:'kids',    name:'Детская стрижка',        price:3000, duration:30 },
+    { id:'teens',   name:'Подростковая стрижка',   price:4000, duration:30 },
+    { id:'beard',   name:'Оформление борды',       price:900,  duration:20 },
+    { id:'tone',    name:'Тонирование седины',      price:1200, duration:30 }
+  ];
+
+  var masters = [
+    { id:'any',   name:'Любой свободный мастер', spec:'Мы подберём того, кто освободится к нужному времени.' },
+    { id:'oleg',  name:'Олег Бондарь', spec:'Классические стрижки, прямая бритва.' },
+    { id:'timur', name:'Тимур Ахметов', spec:'Бороды, камуфляж седины.' },
+    { id:'dana',  name:'Дана Ким', spec:'Фейды, укладка, детские стрижки.' }
+  ];
+
+  // ---- render services ----
+  var serviceList = document.getElementById('serviceList');
+  services.forEach(function(s){
+    var li = document.createElement('li');
+    li.className = 'service-row';
+    li.innerHTML =
+      '<span class="name">' + s.name + '</span>' +
+      '<span class="duration">' + s.duration + ' мин</span>' +
+      '<span class="price">' + s.price.toLocaleString('ru-KZ') + ' ₸</span>';
+    serviceList.appendChild(li);
+  });
+
+  // ---- render masters ----
+  var masterGrid = document.getElementById('masterGrid');
+  masters.filter(function(m){ return m.id !== 'any'; }).forEach(function(m){
+    var initials = m.name.split(' ').map(function(w){ return w[0]; }).join('');
+    var card = document.createElement('div');
+    card.className = 'master-card';
+    card.innerHTML =
+      '<div class="master-badge">' + initials + '</div>' +
+      '<h3>' + m.name + '</h3>' +
+      '<p class="spec">' + m.spec + '</p>';
+    masterGrid.appendChild(card);
+  });
+
+  // ---- populate selects ----
+  var serviceSelect = document.getElementById('serviceSelect');
+  services.forEach(function(s){
+    var opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.name + ' — ' + s.price.toLocaleString('ru-KZ') + ' ₸';
+    serviceSelect.appendChild(opt);
+  });
+
+  var masterSelect = document.getElementById('masterSelect');
+  masters.forEach(function(m){
+    var opt = document.createElement('option');
+    opt.value = m.id;
+    opt.textContent = m.name;
+    masterSelect.appendChild(opt);
+  });
+
+  // ---- date min = today ----
+  var dateInput = document.getElementById('dateInput');
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+  function toISO(d){ return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
+  var today = new Date();
+  dateInput.min = toISO(today);
+  dateInput.value = toISO(today);
+
+  // ---- open/closed status (ежедневно 10:00–20:00) ----
+  (function updateStatus(){
+    var hour = new Date().getHours();
+    var open = hour >= 10 && hour < 20;
+    var dot = document.getElementById('statusDot');
+    var text = document.getElementById('statusText');
+    if(!open){
+      dot.classList.add('closed');
+      text.textContent = 'Сейчас закрыто';
+    }
+  })();
+
+  // ---- слоты: ежедневно 10:00–20:00 ----
+  function hoursForDate(){
+    var slots = [];
+    for(var h = 10; h < 20; h++){ slots.push(pad(h) + ':00'); }
+    return slots;
+  }
+
+  var selectedTime = null;
+
+  // ---- запрос занятости на дату у backend'а ----
+  function fetchAvailability(dateStr){
+    return fetch('/api/bookings?date=' + encodeURIComponent(dateStr))
+      .then(function(res){ if(!res.ok) throw new Error('bad response'); return res.json(); })
+      .catch(function(){ return []; }); // сервер недоступен — показываем слоты свободными
+  }
+
+  function renderSlots(){
+    var slotGrid = document.getElementById('slotGrid');
+    var hint = document.getElementById('slotHint');
+    selectedTime = null;
+    updateSubmitState();
+
+    var dateStr = dateInput.value;
+    var masterId = masterSelect.value;
+    if(!dateStr){
+      slotGrid.innerHTML = '';
+      hint.textContent = 'Сначала выберите дату.';
+      return;
+    }
+
+    hint.textContent = 'Проверяем занятость…';
+    slotGrid.innerHTML = '';
+
+    fetchAvailability(dateStr).then(function(rows){
+      var slots = hoursForDate();
+      var isToday = dateStr === toISO(new Date());
+      var nowHour = new Date().getHours();
+      var realMasterIds = masters.filter(function(m){ return m.id !== 'any'; }).map(function(m){ return m.id; });
+      var anyAvailable = false;
+
+      slots.forEach(function(time){
+        var pastToday = isToday && parseInt(time,10) <= nowHour;
+        var bookedMastersAtTime = rows.filter(function(r){ return r.time === time; }).map(function(r){ return r.master; });
+
+        var taken;
+        if(masterId === 'any'){
+          taken = realMasterIds.every(function(id){ return bookedMastersAtTime.indexOf(id) !== -1; });
+        } else {
+          taken = bookedMastersAtTime.indexOf(masterId) !== -1;
+        }
+        var disabled = taken || pastToday;
+        if(!disabled) anyAvailable = true;
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'slot-btn';
+        btn.textContent = time;
+        if(disabled){ btn.disabled = true; }
+        btn.addEventListener('click', function(){
+          Array.prototype.forEach.call(slotGrid.children, function(b){ b.classList.remove('is-selected'); });
+          this.classList.add('is-selected');
+          selectedTime = this.textContent;
+          updateSubmitState();
+          updateLedger();
+        });
+        slotGrid.appendChild(btn);
+      });
+
+      hint.textContent = anyAvailable
+        ? 'Занятые слоты недоступны для выбранного мастера.'
+        : 'На эту дату у выбранного мастера свободных мест нет — попробуйте другую дату или мастера.';
+    });
+  }
+
+  dateInput.addEventListener('change', function(){ renderSlots(); updateLedger(); });
+  masterSelect.addEventListener('change', function(){ renderSlots(); updateLedger(); });
+  serviceSelect.addEventListener('change', updateLedger);
+
+  // ---- ledger summary ----
+  function updateLedger(){
+    var hasBasics = serviceSelect.value && masterSelect.value && dateInput.value && selectedTime;
+    document.getElementById('ledgerEmpty').style.display = hasBasics ? 'none' : 'block';
+    document.getElementById('ledgerRows').style.display = hasBasics ? 'block' : 'none';
+    if(!hasBasics) return;
+
+    var service = services.filter(function(s){ return s.id === serviceSelect.value; })[0];
+    var master = masters.filter(function(m){ return m.id === masterSelect.value; })[0];
+
+    document.getElementById('lgService').textContent = service.name + ' (' + service.duration + ' мин)';
+    document.getElementById('lgMaster').textContent = master.name;
+    document.getElementById('lgDate').textContent = formatDateKz(dateInput.value);
+    document.getElementById('lgTime').textContent = selectedTime;
+    document.getElementById('lgPrice').textContent = service.price.toLocaleString('ru-KZ') + ' ₸';
+  }
+
+  function formatDateKz(iso){
+    var d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('ru-KZ', { day:'numeric', month:'long', weekday:'short' });
+  }
+
+  function updateSubmitState(){
+    var ok = serviceSelect.value && masterSelect.value && dateInput.value && selectedTime;
+    document.getElementById('submitBtn').disabled = !ok;
+  }
+
+  // ---- form submit ----
+  var form = document.getElementById('bookingForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var errorEl = document.getElementById('formError');
+    var submitBtn = document.getElementById('submitBtn');
+    var name = document.getElementById('clientName').value.trim();
+    var phone = document.getElementById('clientPhone').value.trim();
+    var email = document.getElementById('clientEmail').value.trim();
+    var phoneOk = /^[+\d][\d\s\-()]{6,}$/.test(phone);
+
+    if(!name){ errorEl.textContent = 'Укажите, как к вам обращаться.'; return; }
+    if(!phoneOk){ errorEl.textContent = 'Проверьте номер телефона.'; return; }
+    if(!selectedTime){ errorEl.textContent = 'Выберите свободное время.'; return; }
+    errorEl.textContent = '';
+
+    var service = services.filter(function(s){ return s.id === serviceSelect.value; })[0];
+    var masterId = masterSelect.value;
+    var dateStr = dateInput.value;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправляем…';
+
+    fetch('/api/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name,
+        phone: phone,
+        email: email || null,
+        serviceId: service.id,
+        serviceName: service.name,
+        price: service.price,
+        masterId: masterId,
+        date: dateStr,
+        time: selectedTime
+      })
+    })
+      .then(function(res){ return res.json().then(function(data){ return { ok: res.ok, data: data }; }); })
+      .then(function(result){
+        if(!result.ok){
+          errorEl.textContent = result.data.error || 'Не удалось создать запись, попробуйте ещё раз.';
+          renderSlots();
+          return;
+        }
+        var masterName = result.data.master;
+
+        var confirmBox = document.getElementById('confirmBox');
+        confirmBox.style.display = 'block';
+        confirmBox.innerHTML =
+          '<div class="confirm">' +
+            '<span class="tag">Запись № ' + result.data.bookingNumber + '</span>' +
+            '<h3>Готово, ' + name + '</h3>' +
+            '<p class="sub">Место в графике закреплено за вами.</p>' +
+            '<div class="row"><span class="k">Услуга</span><span>' + service.name + '</span></div>' +
+            '<div class="row"><span class="k">Мастер</span><span>' + masterName + '</span></div>' +
+            '<div class="row"><span class="k">Дата и время</span><span>' + formatDateKz(dateStr) + ', ' + selectedTime + '</span></div>' +
+            '<div class="row"><span class="k">К оплате в салоне</span><span>' + service.price.toLocaleString('ru-KZ') + ' ₸</span></div>' +
+            '<p class="note">Мы позвоним на номер ' + phone + ' в течение 15 минут, чтобы подтвердить визит' + (email ? ', а также пришлём напоминание на почту ближе к визиту' : '') + '.</p>' +
+            '<a class="btn-ghost again" href="#booking">Записать ещё один визит</a>' +
+          '</div>';
+
+        confirmBox.scrollIntoView({ behavior:'smooth', block:'start' });
+
+        form.reset();
+        dateInput.value = toISO(today);
+        selectedTime = null;
+        renderSlots();
+        updateLedger();
+      })
+      .catch(function(){
+        errorEl.textContent = 'Сервер недоступен. Проверьте, что backend запущен.';
+      })
+      .finally(function(){
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Записаться';
+      });
+  });
+
+  // ---- mobile nav ----
+  var burger = document.getElementById('burgerBtn');
+  var mobileLinks = document.getElementById('mobileLinks');
+  burger.addEventListener('click', function(){
+    var open = mobileLinks.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  mobileLinks.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      mobileLinks.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // ---- init ----
+  renderSlots();
+  updateLedger();
+
+})();
+</script>
+
+</body>
+</html>

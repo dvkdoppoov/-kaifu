@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>по kaifu — Админка</title>
+<style>
+  :root{
+    --bg:#1B1815; --bg-panel:#241F19; --paper:#EFE7D8; --paper-dim:#B4AA96;
+    --brass:#C29A53; --brass-bright:#E0BC7C; --oxblood:#9C3C36; --line:rgba(194,154,83,.28);
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--bg); color:var(--paper);
+    font-family:'Work Sans', Arial, sans-serif; font-size:15px; line-height:1.5;
+    padding:28px 20px 60px;
+  }
+  h1{ font-size:1.6rem; margin:0 0 4px; }
+  .sub{ color:var(--paper-dim); font-size:.9rem; margin-bottom:28px; }
+  .stat-row{ display:flex; gap:16px; flex-wrap:wrap; margin-bottom:32px; }
+  .stat-card{
+    background:var(--bg-panel); border:1px solid var(--line); border-top:3px solid var(--brass);
+    padding:16px 20px; min-width:140px; flex:1;
+  }
+  .stat-card .label{ font-size:.8rem; color:var(--paper-dim); margin-bottom:6px; }
+  .stat-card .value{ font-size:1.5rem; font-weight:600; color:var(--brass-bright); font-variant-numeric:tabular-nums; }
+  h2{ font-size:1.1rem; margin:0 0 14px; color:var(--paper); }
+  section{ margin-bottom:36px; }
+  table{ width:100%; border-collapse:collapse; font-size:.9rem; }
+  th, td{ text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th{ color:var(--paper-dim); font-weight:500; font-size:.82rem; }
+  td.num{ font-variant-numeric:tabular-nums; }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--line); }
+  .status-cancelled{ color:var(--oxblood); text-decoration:line-through; }
+  .cancel-btn{
+    background:none; border:1px solid var(--line); color:var(--paper-dim);
+    padding:5px 10px; border-radius:3px; font-size:.78rem; cursor:pointer;
+  }
+  .cancel-btn:hover{ border-color:var(--oxblood); color:var(--oxblood); }
+  .cancel-btn:disabled{ opacity:.4; cursor:not-allowed; }
+  .empty{ color:var(--paper-dim); padding:16px; }
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media (max-width:700px){ .two-col{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+  <h1>по kaifu — Админка</h1>
+  <p class="sub">История записей, статистика по услугам и мастерам.</p>
+
+  <div class="stat-row" id="statRow"></div>
+
+  <section class="two-col">
+    <div>
+      <h2>По услугам</h2>
+      <div class="table-wrap">
+        <table id="byServiceTable"><thead><tr><th>Услуга</th><th>Кол-во</th><th>Выручка</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div>
+      <h2>По мастерам</h2>
+      <div class="table-wrap">
+        <table id="byMasterTable"><thead><tr><th>Мастер</th><th>Кол-во</th><th>Выручка</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Все записи</h2>
+    <div class="table-wrap">
+      <table id="bookingsTable">
+        <thead>
+          <tr>
+            <th>№</th><th>Дата</th><th>Время</th><th>Клиент</th><th>Телефон</th>
+            <th>Услуга</th><th>Мастер</th><th>Цена</th><th>Статус</th><th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+<script>
+(function(){
+
+  function tg(n){ return Number(n||0).toLocaleString('kz-KZ') + ' ₸'; }
+
+  function loadStats(){
+    fetch('/api/admin/stats').then(function(r){ return r.json(); }).then(function(data){
+      var statRow = document.getElementById('statRow');
+      statRow.innerHTML =
+        '<div class="stat-card"><div class="label">Всего записей</div><div class="value">' + data.totals.count + '</div></div>' +
+        '<div class="stat-card"><div class="label">Общая выручка</div><div class="value">' + rub(data.totals.revenue) + '</div></div>' +
+        '<div class="stat-card"><div class="label">Записей за 7 дней</div><div class="value">' +
+          data.last7days.reduce(function(sum,d){ return sum + d.count; }, 0) + '</div></div>';
+
+      var byServiceBody = document.querySelector('#byServiceTable tbody');
+      byServiceBody.innerHTML = data.byService.map(function(r){
+        return '<tr><td>' + r.service + '</td><td class="num">' + r.count + '</td><td class="num">' + rub(r.revenue) + '</td></tr>';
+      }).join('') || '<tr><td colspan="3" class="empty">Пока нет данных</td></tr>';
+
+      var byMasterBody = document.querySelector('#byMasterTable tbody');
+      byMasterBody.innerHTML = data.byMaster.map(function(r){
+        return '<tr><td>' + r.master + '</td><td class="num">' + r.count + '</td><td class="num">' + rub(r.revenue) + '</td></tr>';
+      }).join('') || '<tr><td colspan="3" class="empty">Пока нет данных</td></tr>';
+    });
+  }
+
+  function loadBookings(){
+    fetch('/api/admin/bookings').then(function(r){ return r.json(); }).then(function(rows){
+      var body = document.querySelector('#bookingsTable tbody');
+      if(!rows.length){
+        body.innerHTML = '<tr><td colspan="10" class="empty">Записей пока нет</td></tr>';
+        return;
+      }
+      body.innerHTML = rows.map(function(b){
+        var cancelled = b.status === 'cancelled';
+        return '<tr' + (cancelled ? ' class="status-cancelled"' : '') + '>' +
+          '<td>' + b.booking_number + '</td>' +
+          '<td>' + b.date + '</td>' +
+          '<td>' + b.time + '</td>' +
+          '<td>' + b.name + '</td>' +
+          '<td>' + b.phone + '</td>' +
+          '<td>' + b.service + '</td>' +
+          '<td>' + b.master + '</td>' +
+          '<td class="num">' + tg(b.price) + '</td>' +
+          '<td>' + (cancelled ? 'отменена' : 'активна') + '</td>' +
+          '<td>' + (cancelled ? '' :
+            '<button class="cancel-btn" data-id="' + b.id + '">Отменить</button>') + '</td>' +
+        '</tr>';
+      }).join('');
+
+      body.querySelectorAll('.cancel-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          btn.disabled = true;
+          fetch('/api/admin/bookings/' + btn.dataset.id + '/cancel', { method:'POST' })
+            .then(function(){ loadBookings(); loadStats(); });
+        });
+      });
+    });
+  }
+
+  loadStats();
+  loadBookings();
+
+})();
+</script>
+
+</body>
+</html>
